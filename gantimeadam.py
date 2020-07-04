@@ -136,9 +136,9 @@ class GAN():
 
             # If at save interval => save generated image samples
             if epoch % sample_interval == 0:
-                self.sample_images(epoch)
+                self.sample_images(epoch, batch_size)
 
-    def sample_images(self, epoch):
+    def sample_images(self, epoch,batch_size):
         r, c = 5, 5
         noise = np.random.normal(0, 1, (r * c, self.latent_dim))
         gen_imgs = self.generator.predict(noise)
@@ -153,7 +153,7 @@ class GAN():
                 axs[i,j].imshow(gen_imgs[cnt, :,:,0], cmap='gray')
                 axs[i,j].axis('off')
                 cnt += 1
-        fig.savefig("images/%d.png" % epoch)
+        fig.savefig("imagesadam%d/%d.png" %(batch_size, epoch))
         plt.close()
 
 
@@ -168,18 +168,46 @@ if __name__ == '__main__':
     begin32=time.time()
     gan.train(epochs=30000, batch_size=32, sample_interval=200)
     end32=time.time()
+    begin50=time.time()
+    gan.train(epochs=30000, batch_size=50, sample_interval=200)
+    end50=time.time()
     begin64=time.time()
     gan.train(epochs=30000, batch_size=64, sample_interval=200)
     end64=time.time()
+    begin100= time.time()
+    gan.train(epochs=30000, batch_size=100, sample_interval=200)
+    end100=time.time()
     begin128=time.time()
     gan.train(epochs=30000, batch_size=128, sample_interval=200)
     end128=time.time()
-    begin256= time.time()
+    begin150=time.time()
+    gan.train(epochs=30000, batch_size=150, sample_interval=200)
+    end150=time.time()
+    begin200=time.time()
+    gan.train(epochs=30000, batch_size=200, sample_interval=200)
+    end200=time.time()
+    begin250=time.time()
+    gan.train(epochs=30000, batch_size=250, sample_interval=200)
+    end250=time.time()
+    begin256=time.time()
     gan.train(epochs=30000, batch_size=256, sample_interval=200)
     end256=time.time()
+    begin512= time.time()
+    gan.train(epochs=30000, batch_size=512, sample_interval=200)
+    end512=time.time()
+    begin1024= time.time()
+    gan.train(epochs=30000, batch_size=1024, sample_interval=200)
+    end1024=time.time()
     print("Time for 8 batches:", end8-begin8)
     print("Time for 16 batches:", end16-begin16)
     print("Time for 32 batches:", end32-begin32)
+    print("Time for 50 batches:", end50-begin50)
     print("Time for 64 batches:", end64-begin64)
+    print("Time for 100 batches:", end100-begin100)
     print("Time for 128 batches:", end128-begin128)
+    print("Time for 150 batches:", end150-begin150)
+    print("Time for 200 batches:", end200-begin200)
+    print("Time for 250 batches:", end250-begin250)
     print("Time for 256 batches:", end256-begin256)
+    print("Time for 512 batches:", end512-begin512)
+    print("Time for 1024 batches:", end1024-begin1024)
