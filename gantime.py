@@ -23,7 +23,7 @@ class GAN():
         self.img_shape = (self.img_rows, self.img_cols, self.channels)
         self.latent_dim = 100
 
-        optimizer = SGD(0.001)
+        optimizer = SGD(0.01)
 
         # Build and compile the discriminator
         self.discriminator = self.build_discriminator()
@@ -94,6 +94,9 @@ class GAN():
 
         # Load the dataset
         (X_train, _), (_, _) = mnist.load_data()
+        lst_loss=[]
+        lst_dloss = []
+        lst_acc= []
 
         # Rescale -1 to 1
         X_train = X_train / 127.5 - 1.
@@ -132,12 +135,45 @@ class GAN():
             # Train the generator (to have the discriminator label samples as valid)
             g_loss = self.combined.train_on_batch(noise, valid)
 
+            lst_loss.append(g_loss)
+            lst_dloss.append(d_loss[0])
+            lst_acc.append(100*d_loss[1])
             # Plot the progress
             print ("%d [D loss: %f, acc.: %.2f%%] [G loss: %f]" % (epoch, d_loss[0], 100*d_loss[1], g_loss))
 
             # If at save interval => save generated image samples
             if epoch % sample_interval == 0:
                 self.sample_images(epoch,batch_size)
+
+        #draw_result(range(epochs), lst_loss, lst_dloss, lst_acc, "sgd_method",batch_size)
+        plt.figure(batch_size)
+        plt.plot(range(epochs), lst_dloss, '-b', label='loss discriminator')
+        plt.plot(range(epochs), lst_acc, '-r', label='accuracy')
+        plt.plot(range(epochs), lst_loss, '-g', label='loss generator')
+
+        plt.xlabel("Iterations")
+        plt.legend(loc='upper left')
+        plt.title("SGD Method")
+
+        # save image
+        plt.savefig("title%d.png" %batch_size)  # should before show method
+
+        # show
+        #plt.show()
+
+
+    #def draw_result(lst_iter, lst_gloss, lst_dloss, lst_acc, title,batch_size):
+
+    #    plt.plot(lst_iter, lst_gloss, '-g', label='loss generator')
+
+#        plt.xlabel("Iterations")
+#
+        # save image
+#        plt.savefig("title%d.png" %batch_size)  # should before show method
+
+        # show
+#        plt.show()
+
 
     def sample_images(self, epoch, batch_size):
         r, c = 5, 5
